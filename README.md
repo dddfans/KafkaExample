@@ -1,19 +1,42 @@
-Kafka使用示例
+Kafka 最后一周大作业
 
-------
+---------------------
+1.创建topic脚本
+bin/kafka-topics.sh --create --zookeeper 192.168.157.146:2181 --replication-factor 1 --partitions 1 --topic orders
+bin/kafka-topics.sh --create --zookeeper 192.168.157.146:2181 --replication-factor 1 --partitions 1 --topic items
+bin/kafka-topics.sh --create --zookeeper 192.168.157.146:2181 --replication-factor 1 --partitions 1 --topic users
+bin/kafka-topics.sh --create --zookeeper 192.168.157.146:2181 --replication-factor 1 --partitions 1 --topic orderuser-repartition-by-item
+bin/kafka-topics.sh --create --zookeeper 192.168.157.146:2181 --replication-factor 1 --partitions 1 --topic my-result
 
-#Kafka 0.8.2.2示例
- - [Producer示例](https://github.com/habren/KafkaExample/blob/master/demokafka.0.8.2.2/src/main/java/com/jasongj/kafka/ProducerDemo.java) 
- - [HashPartitioner示例](https://github.com/habren/KafkaExample/blob/master/demokafka.0.8.2.2/src/main/java/com/jasongj/kafka/HashPartitioner.java) 实现HashPartitioner从而保证key相同的消息被发送到同一个Partition
- - [RoundRobinPartitioner示例](https://github.com/habren/KafkaExample/blob/master/demokafka.0.8.2.2/src/main/java/com/jasongj/kafka/HashPartitioner.java) 提供RoundRobin消息路由算法，实现Load balance
- - [High Level Consumer示例](https://github.com/habren/KafkaExample/blob/master/demokafka.0.8.2.2/src/main/java/com/jasongj/kafka/DemoHighLevelConsumer.java) 通过High level API中的consumer group实现group内的消息单播和group间的消息广播
- - [Low Level Consumer示例](https://github.com/habren/KafkaExample/blob/master/demokafka.0.8.2.2/src/main/java/com/jasongj/kafka/DemoLowLevelConsumer.java) 使用Low level API可实现精确的消息消费控制
+2.消费者代码
+com.jasongj.kafka.consumer.DemoConsumerManualCommit
 
-#Kafka 0.10.1.0示例
- - [Producer示例](https://github.com/habren/KafkaExample/tree/master/demokafka.0.10.1.0/src/main/java/com/jasongj/kafka/producer) Producer支持send callback
- - [Partitioner示例](https://github.com/habren/KafkaExample/blob/master/demokafka.0.10.1.0/src/main/java/com/jasongj/kafka/producer/HashPartitioner.java) Partitioner接口与旧版本相比有所区别，可以实现更多语义的消息路由/消息分发
- - [Consumer示例](https://github.com/habren/KafkaExample/tree/master/demokafka.0.10.1.0/src/main/java/com/jasongj/kafka/consumer) Kafka 0.10.*版本中新的Consumer使用同一套API同时实现0.8.*及以前版本中的High Level API及Low Level API
- - [Stream Low Level Processor API示例](https://github.com/habren/KafkaExample/blob/master/demokafka.0.10.1.0/src/main/java/com/jasongj/kafka/stream/WordCountProcessor.java) 
- - [Stream Topology示例](https://github.com/habren/KafkaExample/blob/master/demokafka.0.10.1.0/src/main/java/com/jasongj/kafka/stream/WordCountTopology.java) 使用Kafka Stream的Low-level Processor API实现word count
- - [Stream DSL示例](https://github.com/habren/KafkaExample/blob/master/demokafka.0.10.1.0/src/main/java/com/jasongj/kafka/stream/WordCountDSL.java) 通过Kafka Stream的DSL API实现word count功能
- - [Purchase Analysis](https://github.com/habren/KafkaExample/blob/master/demokafka.0.10.1.0/src/main/java/com/jasongj/kafka/stream/PurchaseAnalysis.java) 如何使用KStream与KTable Join，如何创建自己的Serializer/Deserializer和Serde，以及如何使用Kafka Stream的Transform和Kafka Stream的Window
+3.Kafka Stream
+com.jasongj.kafka.stream.PurchaseAnalysis4
+
+4.读文件中的数据并发布到Kafka的Producer
+com.jasongj.kafka.stream.producer.ItemProducer
+com.jasongj.kafka.stream.producer.UserProducer
+com.jasongj.kafka.stream.producer.OrderProducer
+
+5.测试数据文件
+/demokafka.0.10.1.0/src/main/resources/items.csv
+/demokafka.0.10.1.0/src/main/resources/users.csv
+/demokafka.0.10.1.0/src/main/resources/orders.csv
+
+6.测试过程
+  1)先启动消费者，对结果topic进行消费
+  2)执行PurchaseAnalysis4 启动Kafka Stream
+  3)按照顺序执行 item生产者，user生产者，order生产者，发送到对应topic
+
+7.结果
+  通过对结果topic进行消费可以得到以下结果
+  1447113610000,1447113615000,pod,ipod,91,1888.88,171888.08000000007,1
+
+  1447113610000,1447113615000,pad,ipad,91,4888.88,444888.08000000013,1
+
+  1447113610000,1447113615000,watch,iwatch,105,2668.88,280232.4000000001,1
+
+  1447113610000,1447113615000,phone,iphone,98,5388.88,528110.2400000002,1
+  1447113610000,1447113615000,phone,vivo,21,2000.66,42013.86000000001,2
+  1447113610000,1447113615000,phone,zhongxing,21,1388.88,29166.48,3
