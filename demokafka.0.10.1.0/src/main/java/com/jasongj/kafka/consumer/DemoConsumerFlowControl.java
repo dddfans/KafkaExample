@@ -13,7 +13,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 public class DemoConsumerFlowControl {
 
 	public static void main(String[] args) {
-		args = new String[] { "kafka0:9092", "topic1", "group239", "consumer2" };
+		args = new String[] { "192.168.157.147:9092", "topic1", "group1", "consumer1" };
 		if (args == null || args.length != 4) {
 			System.err.println(
 					"Usage:\n\tjava -jar kafka_consumer.jar ${bootstrap_server} ${topic_name} ${group_name} ${client_id}");
@@ -49,10 +49,11 @@ public class DemoConsumerFlowControl {
 					System.out.printf("Assigned partition for client %s : %s-%s %n", clientid, topicPartition.topic(), topicPartition.partition());
 				});
 			}});
+		
 		while (true) {
-			ConsumerRecords<String, String> records = consumer.poll(100000000);
-			consumer.pause(Arrays.asList(new TopicPartition(topic, 0)));
-			consumer.pause(Arrays.asList(new TopicPartition(topic, 1)));
+			ConsumerRecords<String, String> records = consumer.poll(100000);
+			consumer.pause(Arrays.asList(new TopicPartition(topic, 3)));
+			consumer.pause(Arrays.asList(new TopicPartition(topic, 4)));
 			records.forEach(record -> {
 				System.out.printf("client : %s , topic: %s , partition: %d , offset = %d, key = %s, value = %s%n", clientid, record.topic(),
 						record.partition(), record.offset(), record.key(), record.value());

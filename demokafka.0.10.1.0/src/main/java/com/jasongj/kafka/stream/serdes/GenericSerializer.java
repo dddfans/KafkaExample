@@ -8,6 +8,7 @@ import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.jasongj.kafka.stream.model.User;
 
 /**
@@ -24,8 +25,8 @@ import com.jasongj.kafka.stream.model.User;
 public class GenericSerializer<T> implements Serializer<T> {
 
 	private Class<T> type;
-	private ObjectMapper objectMapper = new ObjectMapper();
-
+	//private ObjectMapper objectMapper = new ObjectMapper();
+	private Gson gson = new Gson();
 	public GenericSerializer() {}
 	
 	public GenericSerializer(Class<T> type) {
@@ -53,8 +54,9 @@ public class GenericSerializer<T> implements Serializer<T> {
 			return null;
 		}
 		try {
-			return this.objectMapper.writerFor(type).writeValueAsBytes(object);
-		} catch (IOException ex) {
+//			return this.objectMapper.writerFor(type).writeValueAsBytes(object);
+			return gson.toJson(object).getBytes("UTF-8");
+		} catch (Exception ex) {
 			throw new SerializationException(ex);
 		}
 	}

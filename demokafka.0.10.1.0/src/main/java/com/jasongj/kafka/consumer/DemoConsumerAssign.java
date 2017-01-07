@@ -11,7 +11,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 public class DemoConsumerAssign {
 
 	public static void main(String[] args) {
-		args = new String[] { "kafka0:9092", "topic1", "group1", "consumer3" };
+		args = new String[] { "192.168.157.147:9092", "topic1", "group239", "consumer3" };
 		if (args == null || args.length != 4) {
 			System.err.println(
 					"Usage:\n\tjava -jar kafka_consumer.jar ${bootstrap_server} ${topic_name} ${group_name} ${client_id}");

@@ -14,7 +14,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 public class DemoConsumerCommitCallback {
 
 	public static void main(String[] args) throws Exception {
-		args = new String[] { "kafka0:9092", "topic1", "group11", "consumer2" };
+		args = new String[] { "192.168.157.147:9092", "topic1", "group11", "consumer2" };
 		if (args == null || args.length != 4) {
 			System.err.println(
 					"Usage:\n\tjava -jar kafka_consumer.jar ${bootstrap_server} ${topic_name} ${group_name} ${client_id}");

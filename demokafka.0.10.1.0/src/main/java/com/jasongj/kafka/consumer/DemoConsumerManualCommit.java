@@ -7,12 +7,14 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.DoubleDeserializer;
+import org.apache.kafka.common.serialization.IntegerDeserializer;
+import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 public class DemoConsumerManualCommit {
 
 	public static void main(String[] args) throws Exception {
-		args = new String[] { "kafka0:19092", "gender-amount", "group4", "consumer2" };
+		args = new String[] { "192.168.157.147:9092", "my-result", "group", "consumer1" };
 		if (args == null || args.length != 4) {
 			System.err.println(
 					"Usage:\n\tjava -jar kafka_consumer.jar ${bootstrap_server} ${topic_name} ${group_name} ${client_id}");
@@ -26,9 +28,9 @@ public class DemoConsumerManualCommit {
 		Properties props = new Properties();
 		props.put("bootstrap.servers", bootstrap);
 		props.put("group.id", groupid);
-		props.put("enable.auto.commit", "false");
+		props.put("enable.auto.commit", "true");
 		props.put("key.deserializer", StringDeserializer.class.getName());
-		props.put("value.deserializer", DoubleDeserializer.class.getName());
+		props.put("value.deserializer", StringDeserializer.class.getName());
 		props.put("max.poll.interval.ms", "300000");
 		props.put("max.poll.records", "500");
 		props.put("auto.offset.reset", "earliest");
@@ -36,13 +38,15 @@ public class DemoConsumerManualCommit {
 		consumer.subscribe(Arrays.asList(topic));
 		AtomicLong atomicLong = new AtomicLong();
 		while (true) {
-			ConsumerRecords<String, String> records = consumer.poll(100);
+			ConsumerRecords<String, String> records = consumer.poll(10000);
 			records.forEach(record -> {
-				System.out.printf("client : %s , topic: %s , partition: %d , offset = %d, key = %s, value = %s%n",
-						clientid, record.topic(), record.partition(), record.offset(), record.key(), record.value());
-				if (atomicLong.get() % 10 == 0) {
+//				System.out.printf("client : %s , topic: %s , partition: %d , offset = %d, key = %s, value = %s%n",
+//						clientid, record.topic(), record.partition(), record.offset(), record.key(), record.value());
+				System.out.printf("%s%n",record.value());
+
+				//				if (atomicLong.get() % 10 == 0) {
 //					consumer.commitSync();
-				}
+//				}
 			});
 		}
 	}

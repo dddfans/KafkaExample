@@ -7,6 +7,7 @@ import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 /**
  * This deserializer can deserialize any object of POJO class
@@ -22,8 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class GenericDeserializer<T> implements Deserializer<T> {
 
 	private Class<T> type;
-	private ObjectMapper objectMapper = new ObjectMapper();
-
+//	private ObjectMapper objectMapper = new ObjectMapper();
+	private Gson gson = new Gson();
 	public GenericDeserializer() {}
 	
 	public GenericDeserializer(Class<T> type) {
@@ -52,7 +53,8 @@ public class GenericDeserializer<T> implements Deserializer<T> {
 			return null;
 		}
 		try {
-			return this.objectMapper.readValue(data, type);
+//			return this.objectMapper.readValue(data, type);
+			return gson.fromJson(new String(data,"UTF-8"), type);
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
 		}
