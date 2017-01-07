@@ -65,7 +65,7 @@ public class PurchaseAnalysis4 {
 					v3.setItemList(newItemlist);
 					return v3;
 				}
-				, TimeWindows.of(1000 * 5).advanceBy(1000 * 5)
+				, TimeWindows.of(1000 * 60 * 60).advanceBy(1000 * 5)
 				, "type-state-store").toStream();
 		kStream.map((Windowed<String> window, GroupInfo groupInfo) -> {
 			return new KeyValue<String, String>(window.key(),  groupInfo.printTop10(window.window().start(), window.window().end()));
